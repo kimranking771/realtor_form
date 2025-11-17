@@ -1,65 +1,50 @@
-const express = require("express");
-const path = require("path");
-const fetch = require("node-fetch");
-require("dotenv").config();
+import express from "express";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
-
-// middleware
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// public folder
-app.use(express.static(path.join(__dirname, "public")));
-
-// submit form route
-app.post("/submit-form", async (req, res) => {
-  const { name, phone, email, location } = req.body;
-
-  // BREVO API EMAIL DATA
-  const emailBody = {
-    sender: { email: process.env.FROM_EMAIL },
-    to: [{ email: process.env.TO_EMAIL }],
-    subject: "New Client Application",
-    textContent: `
-A client has submitted a form:
-
-Name: ${name}
-Phone: ${phone}
-Email: ${email}
-Location: ${location}
-    `,
-  };
-
+app.post("/send", async (req, res) => {
   try {
+    const { name, email, phone, message } = req.body;
+
+    const data = {
+      sender: { email: process.env.FROM_EMAIL },
+      to: [{ email: process.env.TO_EMAIL }],
+      subject: "New Realtor Form Submission",
+      htmlContent: `
+        <h2>New Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `
+    };
+
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
-        "api-key": process.env.BREVO_API_KEY,
         "Content-Type": "application/json",
+        "api-key": process.env.BREVO_API_KEY
       },
-      body: JSON.stringify(emailBody),
+      body: JSON.stringify(data)
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errText = await response.text();
-      console.log("Brevo Error:", errText);
-      return res.status(500).json({ message: "Email failed" });
+      console.log("BREVO ERROR:", result);
+      return res.status(500).json({ message: "Email error", error: result });
     }
 
-    console.log("Email successfully sent via Brevo API!");
-
-    // redirect to thank you page
-    res.redirect(`/thankyou.html?name=${encodeURIComponent(name)}`);
-
-  } catch (error) {
-    console.log("API Error:", error);
-    res.status(500).json({ message: "Email error" });
+    res.json({ message: "Email sent successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// server listener
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
-});
+app.listen(3000, () => console.log("Server running"));
