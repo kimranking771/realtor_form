@@ -1,49 +1,38 @@
 const express = require("express");
-const fetch = require("node-fetch");
-require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-app.post("/send", async (req, res) => {
-  try {
-    const { name, email, phone, message } = req.body;
-
-    const data = {
-      sender: { email: process.env.FROM_EMAIL },
-      to: [{ email: process.env.TO_EMAIL }],
-      subject: "New Realtor Form Submission",
-      htmlContent: `
-        <h2>New Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Message:</strong> ${message}</p>
-      `
-    };
-
-    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": process.env.BREVO_API_KEY
-      },
-      body: JSON.stringify(data)
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.log("BREVO ERROR:", result);
-      return res.status(500).json({ message: "Email error", error: result });
-    }
-
-    res.json({ message: "Email sent successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+// Required by Render so server doesn't show "Cannot GET /"
+app.get("/", (req, res) => {
+  res.send("Realtor Form API is running");
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+// SAVE FORM DATA HERE
+app.post("/submit", (req, res) => {
+  const formData = req.body;
+
+  const dbFile = path.join(__dirname, "database.json");
+  let savedData = [];
+
+  if (fs.existsSync(dbFile)) {
+    savedData = JSON.parse(fs.readFileSync(dbFile));
+  }
+
+  savedData.push({
+    ...formData,
+    submitted_at: new Date()
+  });
+
+  fs.writeFileSync(dbFile, JSON.stringify(savedData, null, 2));
+
+  res.json({ success: true }); // Your Thank You page will still work
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Server running on port", PORT));
