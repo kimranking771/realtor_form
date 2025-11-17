@@ -1,7 +1,6 @@
-import express from "express";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-dotenv.config();
+const express = require("express");
+const fetch = require("node-fetch");
+require("dotenv").config();
 
 const app = express();
 app.use(express.json());
@@ -47,4 +46,4 @@ app.post("/send", async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Server running"));
+app.listen(3000, () => console.log("Server running on port 3000"));
