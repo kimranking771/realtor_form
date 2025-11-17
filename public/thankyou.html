@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Application Received — Swift Properties</title>
+  <style>
+    body{ margin:0; font-family: Inter, "Segoe UI", Arial; background: linear-gradient(180deg,#fff7ec,#f3f9ff); display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px;}
+    .box{ max-width:900px; width:100%; background:linear-gradient(180deg,#fff,#fcfbfa); border-radius:18px; box-shadow:0 20px 60px rgba(10,37,64,0.12); padding:32px; display:flex; gap:24px; align-items:center; }
+    .left{ flex:1; }
+    .right{ flex:1; display:flex; align-items:center; justify-content:center; position:relative; }
+    h1{ margin:0; font-size:28px; color:#0a2540; }
+    h2.sub{ margin-top:8px; color:#7a5b00; font-weight:700; background: linear-gradient(90deg,#d4af37,#ffd47a); -webkit-background-clip:text; color:transparent; font-size:20px; }
+    p.lead{ color:#475569; margin-top:12px; font-size:15px; line-height:1.5; }
+    .card{ background: linear-gradient(180deg,#fff,#fbf9f5); border-radius:12px; padding:16px; border:1px solid rgba(10,37,64,0.04); box-shadow:0 8px 30px rgba(10,37,64,0.06); }
+    .house{ width:320px; border-radius:12px; box-shadow:0 12px 40px rgba(10,37,64,0.12); transform:translateY(0); transition: transform .8s cubic-bezier(.2,.9,.2,1); }
+    .house:hover{ transform:translateY(-8px) rotate(-1deg); }
+    .check{
+      width:72px; height:72px; border-radius:16px; background:linear-gradient(90deg,#ffd47a,#d4af37); display:flex; align-items:center; justify-content:center; font-weight:800; color:#08203a; font-size:22px; margin-bottom:12px;
+      box-shadow:0 12px 30px rgba(212,175,55,0.2);
+    }
+
+    @media (max-width:860px){
+      .box{ flex-direction:column; padding:18px;}
+      .house{ width:100%; max-width:420px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <div class="left">
+      <div class="card">
+        <div class="check">✓</div>
+        <h1 id="title">Thank you — Application received</h1>
+        <h2 class="sub" id="subtitle">Swift Properties — your trusted local realtor</h2>
+        <p class="lead" id="message">We have received your application and our agents will contact you shortly to arrange viewings and next steps. A copy has also been sent to our team for processing.</p>
+
+        <div style="margin-top:18px; display:flex; gap:12px;">
+          <a href="/" style="padding:12px 16px; background:#0a2540; color:#fff; border-radius:10px; text-decoration:none; font-weight:700;">Return Home</a>
+          <a id="contactBtn" href="mailto:gracejuminat@gmail.com" style="padding:12px 16px; border-radius:10px; border:1px solid rgba(10,37,64,0.08); text-decoration:none; color:#0a2540; font-weight:700;">Contact Us</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <img class="house" id="houseImg" src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200&q=80&auto=format&fit=crop" alt="House photo">
+    </div>
+  </div>
+
+  <script>
+    // read name from query and personalize text
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('fullName') || 'Client';
+    document.getElementById('title').textContent = `Thank you, ${name}`;
+    document.getElementById('message').textContent = `${name}, your application has been received. Our team will review your submission and contact you shortly to arrange viewings or next steps.`;
+
+    // small decorative animation: slowly scale the image in
+    const img = document.getElementById('houseImg');
+    img.style.transform = 'scale(0.98)';
+    setTimeout(()=> img.style.transform = 'scale(1)', 120);
+  </script>
+</body>
+</html>
