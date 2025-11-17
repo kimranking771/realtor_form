@@ -29,7 +29,10 @@ app.post("/submit-form", (req, res) => {
   const email = req.body.email;
   const location = req.body.location;
 
-  // send email
+  // ⭐ Respond IMMEDIATELY — No waiting on email
+  res.redirect(`/thankyou.html?name=${encodeURIComponent(name)}`);
+
+  // ⭐ Send email in background (no delay to user)
   transporter.sendMail(
     {
       from: process.env.FROM_EMAIL,
@@ -46,14 +49,9 @@ Location: ${location}
     },
     (err, info) => {
       if (err) {
-        console.log("Email error:", err);
-        return res.status(500).json({ message: "Email failed" });
-      } else {
-        console.log("Email sent:", info.response);
+        return console.log("Email error:", err);
       }
-
-      // redirect to thank you page
-      res.redirect(`/thankyou.html?name=${encodeURIComponent(name)}`);
+      console.log("Email sent:", info.response);
     }
   );
 });
