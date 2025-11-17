@@ -1,38 +1,57 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const cors = require("cors");
 
 const app = express();
-app.use(express.json());
+
+// middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(express.json());
 
-// Required by Render so server doesn't show "Cannot GET /"
-app.get("/", (req, res) => {
-  res.send("Realtor Form API is running");
-});
+// serve public folder
+app.use(express.static(path.join(__dirname, "public")));
 
-// SAVE FORM DATA HERE
-app.post("/submit", (req, res) => {
-  const formData = req.body;
+// Path to database file
+const dbPath = path.join(__dirname, "database.json");
 
-  const dbFile = path.join(__dirname, "database.json");
-  let savedData = [];
+// Handle form submission
+app.post("/submit-form", (req, res) => {
+  const { name, phone, email, location } = req.body;
 
-  if (fs.existsSync(dbFile)) {
-    savedData = JSON.parse(fs.readFileSync(dbFile));
-  }
+  // Read existing database
+  fs.readFile(dbPath, "utf8", (err, data) => {
+    let records = [];
 
-  savedData.push({
-    ...formData,
-    submitted_at: new Date()
+    if (!err && data.trim() !== "") {
+      records = JSON.parse(data);
+    }
+
+    // Add new form entry
+    const newEntry = {
+      name,
+      phone,
+      email,
+      location,
+      timestamp: new Date().toISOString()
+    };
+
+    records.push(newEntry);
+
+    // Save back to database.json
+    fs.writeFile(dbPath, JSON.stringify(records, null, 2), (err) => {
+      if (err) {
+        console.log("Write error:", err);
+        return res.status(500).json({ message: "Failed to save data" });
+      }
+
+      // Redirect to thank you page
+      res.redirect(`/thankyou.html?name=${encodeURIComponent(name)}`);
+    });
   });
-
-  fs.writeFileSync(dbFile, JSON.stringify(savedData, null, 2));
-
-  res.json({ success: true }); // Your Thank You page will still work
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running on port", PORT));
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
