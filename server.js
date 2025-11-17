@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const nodemailer = require("nodemailer");
+const fetch = require("node-fetch");
 require("dotenv").config();
 
 const app = express();
@@ -9,51 +9,53 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// serve public folder
+// public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// email transporter (Brevo SMTP)
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  auth: {
-    user: process.env.FROM_EMAIL,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// submit form route
+app.post("/submit-form", async (req, res) => {
+  const { name, phone, email, location } = req.body;
 
-// form handler
-app.post("/submit-form", (req, res) => {
-  const name = req.body.name;
-  const phone = req.body.phone;
-  const email = req.body.email;
-  const location = req.body.location;
-
-  // ⭐ Respond IMMEDIATELY — No waiting on email
-  res.redirect(`/thankyou.html?name=${encodeURIComponent(name)}`);
-
-  // ⭐ Send email in background (no delay to user)
-  transporter.sendMail(
-    {
-      from: process.env.FROM_EMAIL,
-      to: process.env.TO_EMAIL,
-      subject: "New Client Application",
-      text: `
+  // BREVO API EMAIL DATA
+  const emailBody = {
+    sender: { email: process.env.FROM_EMAIL },
+    to: [{ email: process.env.TO_EMAIL }],
+    subject: "New Client Application",
+    textContent: `
 A client has submitted a form:
 
 Name: ${name}
 Phone: ${phone}
 Email: ${email}
 Location: ${location}
-      `,
-    },
-    (err, info) => {
-      if (err) {
-        return console.log("Email error:", err);
-      }
-      console.log("Email sent:", info.response);
+    `,
+  };
+
+  try {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": process.env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(emailBody),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.log("Brevo Error:", errText);
+      return res.status(500).json({ message: "Email failed" });
     }
-  );
+
+    console.log("Email successfully sent via Brevo API!");
+
+    // redirect to thank you page
+    res.redirect(`/thankyou.html?name=${encodeURIComponent(name)}`);
+
+  } catch (error) {
+    console.log("API Error:", error);
+    res.status(500).json({ message: "Email error" });
+  }
 });
 
 // server listener
