@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Swift Properties — Client Application</title>
+
   <style>
 /* Floating Telegram Button */
 .telegram-float {
@@ -22,185 +26,253 @@
   text-decoration: none;
   transition: 0.3s ease;
 }
-
 .telegram-float:hover {
   transform: scale(1.08);
   box-shadow: 0 10px 25px rgba(0,0,0,0.35);
 }
-  </style>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Swift Properties — Client Application</title>
 
-  <style>
-    /* Luxury palette: navy / gold / white */
-    :root{
-      --navy:#0a2540;
-      --gold:#d4af37;
-      --muted:#f6f7fb;
-      --card:#ffffff;
-      --accent:#7cc2ff;
-      --glass: rgba(255,255,255,0.65);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: Inter, "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(180deg,#eaf5ff 0%, #fdf7f3 100%);
-      display:flex;
-      flex-direction:column;
-      min-height:100vh;
-    }
+/* Floating Terms Button (bottom-left) */
+.terms-float {
+  position: fixed;
+  width: 56px;
+  height: 56px;
+  bottom: 25px;
+  left: 25px;
+  background: #0a2540;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: 0.25s ease;
+}
+.terms-float:hover { transform: scale(1.06); }
 
-    .wrap{
-      width:100%;
-      max-width:1000px;
-      margin:auto;
-      padding:40px 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
-      border-radius:18px;
-      box-shadow: 0 20px 60px rgba(10,37,64,0.12);
-      overflow:hidden;
-      display:grid;
-      grid-template-columns: 460px 1fr;
-      gap:0;
-    }
+/* Modal for Terms & Conditions */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  z-index: 1200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal {
+  width: 100%;
+  max-width: 980px;
+  max-height: 86vh;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 12px 50px rgba(0,0,0,0.3);
+  overflow: hidden;
+  display:flex;
+  flex-direction:column;
+}
+.modal-header{
+  padding:14px 18px;
+  border-bottom:1px solid #eee;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.modal-body{
+  padding:16px 20px;
+  overflow:auto;
+  font-size:14px;
+  line-height:1.5;
+  color:#222;
+}
+.modal-footer{
+  padding:12px 16px;
+  border-top:1px solid #eee;
+  text-align:right;
+}
 
-    /* Left hero */
-    .hero{
-      background:
-        linear-gradient(180deg, rgba(10,37,64,0.9), rgba(10,37,64,0.6)),
-        url('https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=1200&q=80&auto=format&fit=crop') center/cover no-repeat;
-      color:white;
-      padding:40px;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      gap:18px;
-      position:relative;
-    }
-    .brand{
-      font-size:18px;
-      font-weight:700;
-      color:var(--gold);
-      letter-spacing:0.6px;
-    }
-    .title{
-      font-size:28px;
-      font-weight:800;
-      line-height:1.05;
-      margin:0;
-    }
-    .subtitle{
-      color:rgba(255,255,255,0.9);
-      margin:0;
-      font-size:14px;
-    }
-    .hero .badge{
-      display:inline-block;
-      margin-top:18px;
-      background: rgba(255,255,255,0.08);
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:13px;
-      color:#fff;
-    }
+/* Signature pad styles */
+.sig-pad {
+  border:1px solid #e6eef8;
+  border-radius:8px;
+  background:#fff;
+  width:100%;
+  height:160px;
+  touch-action: none;
+  display:block;
+}
 
-    /* Right form card */
-    .card{
-      padding:28px 32px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.85));
-    }
+/* Luxury palette: navy / gold / white (original styles preserved) */
+:root{
+  --navy:#0a2540;
+  --gold:#d4af37;
+  --muted:#f6f7fb;
+  --card:#ffffff;
+  --accent:#7cc2ff;
+  --glass: rgba(255,255,255,0.65);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg,#eaf5ff 0%, #fdf7f3 100%);
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
 
-    h1.form-heading{
-      margin:0 0 12px 0;
-      font-size:22px;
-      color:var(--navy);
-    }
-    p.lead{
-      margin:0 0 18px 0;
-      color:#6b7280;
-      font-size:14px;
-    }
+.wrap{
+  width:100%;
+  max-width:1000px;
+  margin:auto;
+  padding:40px 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
+  border-radius:18px;
+  box-shadow: 0 20px 60px rgba(10,37,64,0.12);
+  overflow:hidden;
+  display:grid;
+  grid-template-columns: 460px 1fr;
+  gap:0;
+}
 
-    form { display:flex; flex-direction:column; gap:12px; }
+/* Left hero */
+.hero{
+  background:
+    linear-gradient(180deg, rgba(10,37,64,0.9), rgba(10,37,64,0.6)),
+    url('https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=1200&q=80&auto=format&fit=crop') center/cover no-repeat;
+  color:white;
+  padding:40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  gap:18px;
+  position:relative;
+}
+.brand{
+  font-size:18px;
+  font-weight:700;
+  color:var(--gold);
+  letter-spacing:0.6px;
+}
+.title{
+  font-size:28px;
+  font-weight:800;
+  line-height:1.05;
+  margin:0;
+}
+.subtitle{
+  color:rgba(255,255,255,0.9);
+  margin:0;
+  font-size:14px;
+}
+.hero .badge{
+  display:inline-block;
+  margin-top:18px;
+  background: rgba(255,255,255,0.08);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+  color:#fff;
+}
 
-    fieldset{
-      border: none;
-      padding:12px;
-      border-radius:10px;
-      background:linear-gradient(180deg,#fff,#fbfdff);
-      box-shadow: 0 6px 18px rgba(12,34,59,0.04);
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    fieldset.two-col { grid-template-columns: 1fr 1fr; }
-    fieldset.full { grid-template-columns: 1fr; }
+/* Right form card */
+.card{
+  padding:28px 32px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.85));
+}
 
-    legend{
-      font-weight:700;
-      font-size:15px;
-      color:var(--navy);
-      margin-bottom:6px;
-      grid-column: 1 / -1;
-    }
+h1.form-heading{
+  margin:0 0 12px 0;
+  font-size:22px;
+  color:var(--navy);
+}
+p.lead{
+  margin:0 0 18px 0;
+  color:#6b7280;
+  font-size:14px;
+}
 
-    label{ font-size:13px; color:#344054; margin-bottom:6px; display:block; }
-    input, select, textarea {
-      width:100%;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid #e6eef8;
-      font-size:14px;
-      background:#fff;
-    }
-    textarea { min-height:90px; resize:vertical; }
+form { display:flex; flex-direction:column; gap:12px; }
 
-    /* Submit */
-    .actions { display:flex; gap:12px; align-items:center; margin-top:8px; }
-    button.primary{
-      background: linear-gradient(90deg,var(--navy),#2b5ea6);
-      color:white;
-      padding:14px 18px;
-      border-radius:10px;
-      border: none;
-      font-weight:700;
-      cursor:pointer;
-      flex:1;
-      box-shadow: 0 8px 30px rgba(10,37,64,0.12);
-      transition: transform .18s ease, box-shadow .18s;
-    }
-    button.primary:hover{ transform:translateY(-3px); box-shadow: 0 14px 40px rgba(10,37,64,0.18); }
+fieldset{
+  border: none;
+  padding:12px;
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  box-shadow: 0 6px 18px rgba(12,34,59,0.04);
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+fieldset.two-col { grid-template-columns: 1fr 1fr; }
+fieldset.full { grid-template-columns: 1fr; }
 
-    .secondary { display:inline-block; color:var(--navy); font-weight:600; padding:12px; border-radius:8px; border:1px solid #e6eef8; background:#fff; text-align:center; }
+legend{
+  font-weight:700;
+  font-size:15px;
+  color:var(--navy);
+  margin-bottom:6px;
+  grid-column: 1 / -1;
+}
 
-    /* row helpers */
-    .col-span-2 { grid-column: 1 / -1; }
-    .small{ font-size:13px; color:#6b7280; }
+label{ font-size:13px; color:#344054; margin-bottom:6px; display:block; }
+input, select, textarea {
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #e6eef8;
+  font-size:14px;
+  background:#fff;
+}
+textarea { min-height:90px; resize:vertical; }
 
-    /* animated accent */
-    @keyframes floatUp {
-      0%{ transform: translateY(8px); opacity:.0 }
-      50%{ transform: translateY(0); opacity:1 }
-      100%{ transform: translateY(-6px); opacity:.0 }
-    }
-    .hero .floating{
-      position:absolute; right:24px; top:24px; width:72px; height:72px; border-radius:12px; background:linear-gradient(90deg,#fff2d6,#fff); box-shadow:0 8px 30px rgba(10,37,64,0.12);
-      display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--navy);
-      animation: floatUp 4s ease-in-out infinite;
-    }
+/* Submit */
+.actions { display:flex; gap:12px; align-items:center; margin-top:8px; }
+button.primary{
+  background: linear-gradient(90deg,var(--navy),#2b5ea6);
+  color:white;
+  padding:14px 18px;
+  border-radius:10px;
+  border: none;
+  font-weight:700;
+  cursor:pointer;
+  flex:1;
+  box-shadow: 0 8px 30px rgba(10,37,64,0.12);
+  transition: transform .18s ease, box-shadow .18s;
+}
+button.primary:hover{ transform:translateY(-3px); box-shadow: 0 14px 40px rgba(10,37,64,0.18); }
 
-    /* responsive */
-    @media (max-width:920px){
-      .wrap{ grid-template-columns: 1fr; }
-      .hero{ min-height:160px; order:1 }
-      .card{ order:2 }
-      fieldset{ grid-template-columns:1fr; }
-    }
+.secondary { display:inline-block; color:var(--navy); font-weight:600; padding:12px; border-radius:8px; border:1px solid #e6eef8; background:#fff; text-align:center; }
+
+/* row helpers */
+.col-span-2 { grid-column: 1 / -1; }
+.small{ font-size:13px; color:#6b7280; }
+
+/* animated accent */
+@keyframes floatUp {
+  0%{ transform: translateY(8px); opacity:.0 }
+  50%{ transform: translateY(0); opacity:1 }
+  100%{ transform: translateY(-6px); opacity:.0 }
+}
+.hero .floating{
+  position:absolute; right:24px; top:24px; width:72px; height:72px; border-radius:12px; background:linear-gradient(90deg,#fff2d6,#fff); box-shadow:0 8px 30px rgba(10,37,64,0.12);
+  display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--navy);
+  animation: floatUp 4s ease-in-out infinite;
+}
+
+/* responsive */
+@media (max-width:920px){
+  .wrap{ grid-template-columns: 1fr; }
+  .hero{ min-height:160px; order:1 }
+  .card{ order:2 }
+  fieldset{ grid-template-columns:1fr; }
+}
   </style>
 </head>
-
 <body>
 
   <div class="wrap">
@@ -386,6 +458,31 @@
             <input type="text" id="stateAuto" name="stateAuto" readonly>
           </div>
 
+  </fieldset>
+     <!-- TERMS acceptance + signature area (placed above Submit as requested) -->
+        <fieldset class="full">
+          <legend>Agreement & Signature</legend>
+
+          <label style="display:flex; align-items:center; gap:10px;">
+            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+            I have read and agree to the <a href="#" id="openTerms" onclick="openTermsModal(event)">Terms & Conditions</a> and <a href="/privacy" target="_blank">Privacy Policy</a>.
+          </label>
+
+          <div class="small" style="margin-top:6px;">By checking the box you consent to electronic records and tenant screening under U.S. law.</div>
+
+          <div id="signatureWrapper" style="margin-top:12px; display:none;">
+            <label style="display:block; margin-bottom:6px;">Signature (draw with finger or mouse)</label>
+            <canvas id="sigCanvas" class="sig-pad" width="600" height="160"></canvas>
+            <div style="margin-top:8px; display:flex; gap:8px;">
+              <button type="button" id="clearSig" class="btn-ghost" style="padding:8px 12px; border-radius:8px; border:1px solid #e6eef8; background:#fff;">Clear</button>
+              <div class="small" style="align-self:center; color:#6b7280;">Draw your signature above — required after accepting Terms.</div>
+            </div>
+          </div>
+
+          <!-- hidden audit fields -->
+          <input type="hidden" name="terms_accepted_at" id="termsAcceptedAt" value="">
+          <input type="hidden" name="terms_version" id="termsVersion" value="v2025-11-24">
+          <input type="hidden" name="signature_data" id="signatureData" value="">
         </fieldset>
 
         <div class="actions col-span-2">
@@ -416,16 +513,248 @@
         }
     });
 
-    // prevent double-submit and show simple client-side animation
+    // Signature pad and terms behavior
+    (function(){
+      const agreeCheckbox = document.getElementById('agreeTerms');
+      const signatureWrapper = document.getElementById('signatureWrapper');
+      const sigCanvas = document.getElementById('sigCanvas');
+      const signatureDataInput = document.getElementById('signatureData');
+      const clearBtn = document.getElementById('clearSig');
+
+      // show signature pad only when checkbox is checked
+      agreeCheckbox.addEventListener('change', function(){
+        if(this.checked){
+          signatureWrapper.style.display = 'block';
+        } else {
+          signatureWrapper.style.display = 'none';
+          // clear signature
+          try { const ctx = sigCanvas.getContext('2d'); ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height); signatureDataInput.value=''; } catch(e){}
+        }
+      });
+
+      // signature pad implementation (simple, no external libs)
+      const ctx = sigCanvas.getContext('2d');
+      let drawing = false;
+      let lastX = 0, lastY = 0;
+
+      function resizeCanvas(){
+        // maintain display size but scale for devicePixelRatio
+        const ratio = window.devicePixelRatio || 1;
+        const w = sigCanvas.width;
+        const h = sigCanvas.height;
+        sigCanvas.width = w * ratio;
+        sigCanvas.height = h * ratio;
+        sigCanvas.style.width = (w) + 'px';
+        sigCanvas.style.height = (h) + 'px';
+        ctx.scale(ratio, ratio);
+        ctx.lineJoin = ctx.lineCap = 'round';
+        ctx.lineWidth = 2.2;
+        ctx.strokeStyle = '#111';
+      }
+      // initial resize
+      (function(){ resizeCanvas(); })();
+
+      function getPos(e){
+        const rect = sigCanvas.getBoundingClientRect();
+        if(e.touches && e.touches[0]) return {x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top};
+        return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+      }
+      function start(e){
+        drawing = true;
+        const p = getPos(e);
+        lastX = p.x; lastY = p.y;
+        e.preventDefault();
+      }
+      function draw(e){
+        if(!drawing) return;
+        const p = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        lastX = p.x; lastY = p.y;
+        e.preventDefault();
+      }
+      function stop(e){
+        if(!drawing) return;
+        drawing = false;
+        // save data
+        try {
+          const dataURL = sigCanvas.toDataURL('image/png');
+          signatureDataInput.value = dataURL;
+        } catch(err){
+          console.warn('Failed to save signature', err);
+        }
+      }
+
+      // mouse events
+      sigCanvas.addEventListener('mousedown', start);
+      sigCanvas.addEventListener('mousemove', draw);
+      window.addEventListener('mouseup', stop);
+      // touch events
+      sigCanvas.addEventListener('touchstart', start);
+      sigCanvas.addEventListener('touchmove', draw);
+      window.addEventListener('touchend', stop);
+
+      // clear button
+      clearBtn.addEventListener('click', function(){
+        // reset canvas by clearing and resetting size
+        ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+        signatureDataInput.value = '';
+      });
+
+      // on resize, reset canvas (do not preserve drawing to keep code simple)
+      window.addEventListener('resize', function(){
+        try{ ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height); signatureDataInput.value=''; resizeCanvas(); } catch(e){}
+      });
+    })();
+
+    // prevent double-submit and validate signature exists
     document.getElementById("clientForm").addEventListener("submit", function (e) {
-      // form will POST to /submit-form (server should redirect to thankyou page)
       const btn = document.querySelector('button.primary');
+      const agree = document.getElementById('agreeTerms');
+      const sig = document.getElementById('signatureData');
+                // enforce terms checkbox
+      if(!agree.checked){
+        e.preventDefault();
+        alert('Please accept the Terms & Conditions before submitting.');
+        return false;
+      }
+      // enforce signature presence
+      if(!sig.value){
+        e.preventDefault();
+        alert('Please provide your signature by drawing in the signature box.');
+        return false;
+      }
+
+      // timestamp the acceptance
+      document.getElementById('termsAcceptedAt').value = new Date().toISOString();
+
       btn.disabled = true;
       btn.innerText = "Submitting...";
     });
-  </script>
 
-<!-- ================= FOOTER START ================= -->
+    // Terms modal code (opens from floating button, form link, or footer link)
+    (function(){
+      // build modal and append to body
+      const modalBackdrop = document.createElement('div');
+      modalBackdrop.className = 'modal-backdrop';
+
+      modalBackdrop.innerHTML = `
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+          <div class="modal-header">
+            <h3 id="termsTitle" style="margin:0;">Swiftz Properties — Terms & Conditions (USA)</h3>
+            <div><button id="modalClose" style="border:none;background:transparent;font-size:16px;cursor:pointer;">✕</button></div>
+          </div>
+          <div class="modal-body" id="modalBody">
+            <h4>Effective date: 2025-11-24</h4>
+
+            <p><strong>Introduction</strong><br>
+            By submitting an application, clicking “I Agree,” or electronically signing any rental agreement, you (the “Applicant” or “Tenant”) agree to these Terms & Conditions with Swiftz Properties (the “Company”). These Terms govern the application process, tenant screening, use of electronic signatures and records, security deposit handling, and related matters. This is a standard USA-focused template; adapt to state law where required.</p>
+
+            <h4>1. Application, Fees & Screening</h4>
+            <p>1.1 <strong>Application.</strong> Submission of an Application is an offer to rent and is not a lease or guarantee of tenancy.<br>
+            1.2 <strong>Application Fee.</strong> Any application fee charged is non-refundable unless required by state law; it covers administrative costs and screening reports.<br>
+            1.3 <strong>Screening Authorization.</strong> Applicant authorizes Company and its agents to obtain Consumer Reports (credit, criminal, eviction history) and to contact employers, landlords, references and other persons to verify application information. Screening will be conducted consistent with the Fair Credit Reporting Act (FCRA) and applicable state law.</p>
+
+            <h4>2. Fair Housing & Non-Discrimination</h4>
+            <p>The Company complies with the federal Fair Housing Act and applicable state and local laws. The Company does not discriminate against applicants on the basis of race, color, religion, sex, national origin, familial status, disability, or any other protected class.</p>
+
+            <h4>3. Security Deposit, Rent & Fees</h4>
+            <p>3.1 <strong>Security Deposit.</strong> A refundable security deposit is required upon approval and before move-in. The amount, interest (if any), procedures for holding and return, and allowable deductions will comply with state law and will be detailed in the lease.<br>
+            3.2 <strong>Rent & Fees.</strong> Rent amounts, due dates, accepted payment methods, grace periods, late fees, and returned-check fees will be specified in the lease and must comply with state limitations.</p>
+
+            <h4>4. Lead-Based Paint Disclosure</h4>
+            <p>If the property was built prior to 1978, the Company will provide the federally required lead-based paint disclosure forms and the EPA/HUD brochure. Tenant must sign and receive such disclosure prior to lease execution for applicable properties.</p>
+
+            <h4>5. Entry, Viewings & Access</h4>
+            <p>Landlord will provide required notice for non-emergency entry as required by state law. For emergencies, immediate entry may be made to prevent harm or damage.</p>
+
+            <h4>6. Health, Habitability & Maintenance</h4>
+            <p>Owner/Agent will maintain the property according to applicable habitability standards under state law. Tenant must promptly report maintenance issues and allow reasonable access for repairs.</p>
+
+            <h4>7. Consumer Reporting & FCRA Notices</h4>
+            <p>If a Consumer Report is obtained, Applicant has rights under the FCRA. If adverse action is taken based on a Consumer Report (denial, conditional approval, higher deposit), Company will provide the required adverse action notice including the CRA name, address, and contact information, and a copy of the Applicant’s rights under the FCRA.</p>
+
+            <h4>8. Electronic Signatures & Records</h4>
+            <p>By checking the consent box and signing electronically, Applicant consents to conduct transactions electronically and accepts electronic records and signatures under the ESIGN Act and state UETA laws, where applicable. The Company will store an audit trail (timestamp, IP, signature image) as part of the rental record.</p>
+
+            <h4>9. Privacy & Data Protection</h4>
+            <p>Personal data is collected to evaluate applications and manage tenancy. The Company will use reasonable security measures to protect personal information. See our Privacy Policy for details.</p>
+
+            <h4>10. Lease Execution & Move-In</h4>
+            <p>Approval is conditional until a signed lease and required payments are received. Lease terms (duration, renewal, deposit return, notice periods) will appear in the lease document and must comply with state law.</p>
+
+            <h4>11. Pets, Smoking & Parking</h4>
+            <p>Policies on pets, smoking, and parking will be specified in the lease or addenda.</p>
+
+            <h4>12. Termination & Eviction</h4>
+            <p>Lease termination, early termination, eviction procedures, and remedies are governed by the lease and applicable state law.</p>
+
+            <h4>13. Dispute Resolution & Governing Law</h4>
+            <p>The lease will specify governing law (the state of the property). Any alternative dispute resolution (arbitration/mediation) provisions must comply with state statutes and be conspicuous. Consult legal counsel before adopting mandatory arbitration clauses.</p>
+
+            <h4>14. Limitation of Liability</h4>
+            <p>Company is not liable for indirect, incidental, or consequential damages. Applicant indemnifies Company for claims arising from Applicant’s negligence or breach.</p>
+
+            <h4>15. Updates to Terms</h4>
+            <p>Company may update these Terms; the latest version is available at our website. Continued use after notice constitutes acceptance of updated Terms.</p>
+
+            <h4>Contact</h4>
+            <p>Questions: swiftzproperties@gmail.com</p>
+
+          </div>
+          <div class="modal-footer">
+            <button id="modalCloseBtn" style="padding:8px 12px; border-radius:8px; border:1px solid #ddd; background:#fff; cursor:pointer;">Close</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modalBackdrop);
+
+      // open/close functions
+      window.openTermsModal = function(e){
+        if(e) e.preventDefault();
+        modalBackdrop.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      };
+      function closeTermsModal(){
+        modalBackdrop.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      // event delegation for close
+      modalBackdrop.querySelector('#modalClose')?.addEventListener('click', closeTermsModal);
+      modalBackdrop.querySelector('#modalCloseBtn')?.addEventListener('click', closeTermsModal);
+
+      // close on ESC
+      window.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeTermsModal(); });
+
+      // open modal if floating button clicked
+      const floatTerms = document.querySelector('.terms-float');
+      if(floatTerms){
+        floatTerms.addEventListener('click', function(e){ e.preventDefault(); openTermsModal(); });
+      }
+
+      // also attach to inline link with id openTerms
+      const inlineLink = document.getElementById('openTerms');
+      if(inlineLink){
+        inlineLink.addEventListener('click', function(e){ e.preventDefault(); openTermsModal(); });
+      }
+
+      // footer link id 'footerTerms' may exist; delegate click
+      document.addEventListener('click', function(e){
+        if(e.target && (e.target.id === 'footerTerms' || e.target.closest && e.target.closest('#footerTerms'))){
+          e.preventDefault();
+          openTermsModal();
+        }
+      });
+
+      // small helper to avoid name clash
+      function openTermsModal(){ modalBackdrop.style.display='flex'; document.body.style.overflow='hidden'; }
+    })();
+  </script>
+  <!-- ================= FOOTER START ================= -->
 <footer style="background:#0d0d0d; color:#fff; padding:40px 20px; font-family:Arial, sans-serif; margin-top:50px;">
     <div style="max-width:1200px; margin:auto; display:flex; flex-wrap:wrap; justify-content:space-between;">
 
@@ -454,8 +783,8 @@
             <h3 style="font-size:18px; margin-bottom:10px; color:#00eaff;">Contact Us</h3>
             <p style="line-height:1.8;">
                 Email: <a href="mailto:swiftzproperties@gmail.com" style="color:#fff;">swiftzproperties@gmail.com</a><br>
-                Phone: <a href="tel:" style="color:#fff;">+1 501 309 5062</a><br>
-                Location: USA & EUROPEAN countries
+                Phone: <a href="tel:+15013095062" style="color:#fff;">+1 501 309 5062</a><br>
+                Location: USA & EUROPE
             </p>
         </div>
 
@@ -465,6 +794,7 @@
             <p>
                 <a href="#" style="color:#fff; margin-right:10px;">Facebook</a>
                 <a href="#" style="color:#fff; margin-right:10px;">Instagram</a>
+                <a href="#" style="color:#fff; margin-right:10px;" id="footerTerms">Terms & Conditions</a>
                 <a href="#" style="color:#fff;">Twitter</a>
             </p>
         </div>
@@ -478,9 +808,12 @@
     </p>
 </footer>
 <!-- ================= FOOTER END ================= -->
-<!-- Floating Telegram Icon -->
-<a href="https://t.me/Jsparks_MY" class="telegram-float">
-  <span style="font-size:28px;">📨</span>
-</a>
+
+<!-- TELEGRAM FLOATING BUTTON -->
+<a href="https://t.me/Jsparks_MY" target="_blank" class="telegram-float" aria-label="Telegram">✈</a>
+
+<!-- TERMS FLOATING BUTTON (bottom-left) -->
+<a href="#" class="terms-float" aria-label="Terms" title="Terms & Conditions">T</a>
+
 </body>
-  </html>
+</html>
