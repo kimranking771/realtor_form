@@ -21,15 +21,15 @@
       font-family: Inter, "Segoe UI", Arial, sans-serif;
       background: linear-gradient(180deg,#eaf5ff 0%, #fdf7f3 100%);
       display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:40px 20px;
+      flex-direction:column;
       min-height:100vh;
     }
 
     .wrap{
       width:100%;
       max-width:1000px;
+      margin:auto;
+      padding:40px 20px;
       background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
       border-radius:18px;
       box-shadow: 0 20px 60px rgba(10,37,64,0.12);
@@ -50,6 +50,7 @@
       flex-direction:column;
       justify-content:flex-end;
       gap:18px;
+      position:relative;
     }
     .brand{
       font-size:18px;
@@ -107,8 +108,6 @@
       grid-template-columns: 1fr 1fr;
       gap:12px;
     }
-    fieldset.two-col { grid-template-columns: 1fr 1fr; }
-    fieldset.full { grid-template-columns: 1fr; }
 
     legend{
       font-weight:700;
@@ -143,40 +142,33 @@
       box-shadow: 0 8px 30px rgba(10,37,64,0.12);
       transition: transform .18s ease, box-shadow .18s;
     }
-    button.primary:hover{ transform:translateY(-3px); box-shadow: 0 14px 40px rgba(10,37,64,0.18); }
 
-    .secondary { display:inline-block; color:var(--navy); font-weight:600; padding:12px; border-radius:8px; border:1px solid #e6eef8; background:#fff; text-align:center; }
-
-    /* row helpers */
-    .col-span-2 { grid-column: 1 / -1; }
-    .small{ font-size:13px; color:#6b7280; }
-
-    /* animated accent */
-    @keyframes floatUp {
-      0%{ transform: translateY(8px); opacity:.0 }
-      50%{ transform: translateY(0); opacity:1 }
-      100%{ transform: translateY(-6px); opacity:.0 }
-    }
-    .hero .floating{
-      position:absolute; right:24px; top:24px; width:72px; height:72px; border-radius:12px; background:linear-gradient(90deg,#fff2d6,#fff); box-shadow:0 8px 30px rgba(10,37,64,0.12);
-      display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--navy);
+    .floating{
+      position:absolute;
+      right:24px;
+      top:24px;
+      width:72px;
+      height:72px;
+      border-radius:12px;
+      background:linear-gradient(90deg,#fff2d6,#fff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:var(--navy);
       animation: floatUp 4s ease-in-out infinite;
     }
 
-    /* responsive */
     @media (max-width:920px){
       .wrap{ grid-template-columns: 1fr; }
-      .hero{ min-height:160px; order:1 }
-      .card{ order:2 }
-      fieldset{ grid-template-columns:1fr; }
     }
   </style>
 </head>
 
 <body>
+
   <div class="wrap">
 
-    <!-- left hero -->
     <div class="hero">
       <div class="brand">Swift Properties</div>
       <h2 class="title">Your Trusted Local Realtor</h2>
@@ -185,30 +177,28 @@
       <div class="floating">VIP</div>
     </div>
 
-    <!-- right form -->
     <div class="card">
       <h1 class="form-heading">Client Application</h1>
       <p class="lead">Please provide details below and we will contact you to arrange viewings or virtual tours.</p>
 
-      <!-- FORM: note action is relative; server should handle POST /submit-form and redirect to thankyou page -->
-      <form id="clientForm" action="/submit-form" method="POST"> autocomplete="off">
+      <form id="clientForm" action="/submit-form" method="POST" autocomplete="off">
 
-        <fieldset class="two-col">
+        <fieldset>
           <legend>Client Information</legend>
 
           <div>
             <label>Full Name</label>
-            <input type="text" name="name" placeholder="e.g., John Doe" required>
+            <input type="text" name="name" required>
           </div>
 
           <div>
             <label>Phone Number</label>
-            <input type="tel" name="phone" placeholder="e.g., +1 555 555 555" required>
+            <input type="tel" name="phone" required>
           </div>
 
           <div class="col-span-2">
             <label>Email</label>
-            <input type="email" name="email" placeholder="you@example.com" required>
+            <input type="email" name="email" required>
           </div>
 
           <div>
@@ -222,148 +212,13 @@
 
           <div>
             <label>Current Address</label>
-            <input type="text" name="location" placeholder="Street, City, State">
+            <input type="text" name="location">
           </div>
-        </fieldset>
-
-        <fieldset class="two-col">
-          <legend>Property Needs</legend>
-
-          <div>
-            <label>Looking to</label
-            <select name="lookingTo">
-              <option>Buy</option>
-              <option>Rent</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Property Type</label>
-            <select name="propertyType">
-              <option>House</option>
-              <option>Condo</option>
-              <option>Townhouse</option>
-              <option>Apartment</option>
-              <option>Land</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Move-In / Closing Date</label>
-            <input type="date" name="moveInDate">
-          </div>
-
-          <div>
-            <label>Bedrooms</label>
-            <input type="number" name="bedrooms" min="0">
-          </div>
-
-          <div>
-            <label>Bathrooms</label>
-            <input type="number" name="bathrooms" min="0">
-          </div>
-
-          <div class="col-span-2">
-            <label>Square Footage Range</label>
-            <input type="text" name="sqftRange" placeholder="e.g., 1000 - 2000 sq ft">
-          </div>
-
-          <div>
-            <label>Parking Needs</label>
-            <input type="text" name="parking" placeholder="Garage, driveway, street">
-          </div>
-
-          <div>
-            <label>Pet Requirements</label>
-            <input type="text" name="pets">
-          </div>
-        </fieldset>
-
-        <fieldset class="two-col">
-          <legend>Location & Budget</legend>
-
-          <div>
-            <label>Preferred Cities / Neighborhoods</label>
-            <input type="text" name="preferredCities">
-          </div>
-
-          <div>
-            <label>School District Requirements</label>
-            <input type="text" name="schoolDistrict">
-          </div>
-
-          <div>
-            <label>Commute Time Preference</label>
-            <input type="text" name="commute">
-          </div>
-
-          <div>
-            <label>Rent or Purchase Budget</label>
-            <input type="text" name="budget" placeholder="Min - Max">
-          </div>
-
-          <div>
-            <label>Pre-approved for Mortgage?</label>
-            <select name="preapproved"><option>Yes</option><option>No</option></select>
-          </div>
-        </fieldset>
-
-        <fieldset class="full">
-          <legend>Features & Timeline</legend>
-
-          <label>Must-Have Features</label>
-          <textarea name="mustHave"></textarea>
-
-          <label>Nice-to-Have Features</label>
-          <textarea name="niceToHave"></textarea>
-
-          <div style="display:flex; gap:12px; margin-top:12px;">
-            <div style="flex:1;">
-              <label>Timeline</label>
-              <input type="text" name="timeline" placeholder="Immediate / 1-3 months / 3+ months">
-            </div>
-
-            <div style="flex:1;">
-              <label>Additional Notes</label>
-              <input type="text" name="notes">
-            </div>
-          </div>
-
-        </fieldset>
-
-        <fieldset class="two-col">
-          <legend>Viewing & Location Auto Lookup</legend>
-
-          <div>
-            <label for="viewingOption">Are you available for:</label>
-            <select id="viewingOption" name="viewingOption" required>
-              <option value="">Select an option</option>
-              <option value="in-person">In-Person Viewing</option>
-              <option value="remote">Remote / Virtual Viewing</option>
-              <option value="either">Either</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="viewingTime">Preferred Viewing Time</label>
-            <input type="datetime-local" id="viewingTime" name="viewingTime" required>
-          </div>
-
-          <div>
-            <label for="zipCode">Zip Code (Smart Lookup)</label>
-            <input type="text" id="zipCode" name="zipCode" pattern="\d{5}" placeholder="Enter 5-digit ZIP" required>
-          </div>
-
-          <div>
-            <label for="stateAuto">State (Auto-Detected)</label>
-            <input type="text" id="stateAuto" name="stateAuto" readonly>
-          </div>
-
         </fieldset>
 
         <div class="actions col-span-2">
           <button class="primary" type="submit">Submit Application</button>
-          <a class="secondary" href="tel:+000000000">Call Us</a>
+          <a class="secondary" href="tel:+15013095062">Call Us</a>
         </div>
 
       </form>
@@ -372,34 +227,13 @@
   </div>
 
   <script>
-    // ZIP → STATE auto-detect (simple prefix mapping)
-    const zipToState = {
-        "90": "CA", "91": "CA", "92": "CA", "93": "CA",
-        "10": "NY", "11": "NY", "12": "NY",
-        "60": "IL", "61": "IL", "62": "IL"
-    };
-    document.getElementById('zipCode').addEventListener('input', function () {
-        const zip = this.value;
-        if (zip.length >= 2) {
-            const prefix = zip.substring(0, 2);
-            const stateField = document.getElementById('stateAuto');
-            stateField.value = zipToState[prefix] || "";
-        } else {
-            document.getElementById('stateAuto').value = "";
-        }
-    });
-
-    // prevent double-submit and show simple client-side animation
-    document.getElementById("clientForm").addEventListener("submit", function (e) {
-      // form will POST to /submit-form (server should redirect to thankyou page)
+    document.getElementById("clientForm").addEventListener("submit", function () {
       const btn = document.querySelector('button.primary');
       btn.disabled = true;
       btn.innerText = "Submitting...";
     });
   </script>
-  </div>
-</div>
-</div>
+
 <!-- ================= FOOTER START ================= -->
 <footer style="background:#0d0d0d; color:#fff; padding:40px 20px; font-family:Arial, sans-serif; margin-top:50px;">
     <div style="max-width:1200px; margin:auto; display:flex; flex-wrap:wrap; justify-content:space-between;">
@@ -431,7 +265,7 @@
             <p style="line-height:1.8;">
                 Email: <a href="mailto:swiftzproperties@gmail.com" style="color:#fff;">swiftzproperties@gmail.com</a><br>
                 Phone: <a href="tel:+15013095062" style="color:#fff;">+1 501 309 5062</a><br>
-                Location: Kenya & USA
+                Location: USA ONLY
             </p>
         </div>
 
@@ -454,5 +288,6 @@
     </p>
 </footer>
 <!-- ================= FOOTER END ================= -->
+
 </body>
- </html>
+</html>
